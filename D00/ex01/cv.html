@@ -1,22 +1,53 @@
-<HTML>
-	<HEAD>
-		<TITLE>CV</TITLE>
-	</HEAD>
-	<BODY>
-		<H1> MON CV </H1>
-		<TABLE>
-		  <tr>
-			<th> nom </th>
-			<th> prenom </th>
-			<th> competences </th>
-			<th> parcours </th>
-		  </tr>
-		  <tr>
-			  <td> 1 </td>
-			  <td> 2 </td>
-			  <td> 3 </td>
-			  <td> 4 </td>
-		  </tr>
-		</TABLE>
-	</BODY>
-</HTML>
+<!DOCTYPE html> 
+<html> 
+	<head> 
+		<title>Mon CV</title>
+		<style>
+		table, th, td {
+			border-style: solid;
+			border-collapse: collapse;
+			border-color: green;
+		}
+		#bas {
+			border-color: #424242;
+		}
+		</style>
+	</head> 
+	<body> 
+	<h1>Mon CV</h1>
+	<h2>Prénom : Eve</h2>
+	<h2>Nom :  Jackson</h2>
+	<table class="competence">
+		<tr>
+			<th>Compétence</th><th>Description</th>
+		</tr>
+		<tr>
+			<td>Python</td><td>Encours</td>
+		</tr>
+		<tr>
+			<td>Php</td><td id="bas">Trop fort</td>
+		</tr>
+	</table>
+	<h3>Je suis :</h3>
+	<ol>
+		<li>Pationné</li>
+		<li>Compétent</li>
+	</ol>
+	<h3>J'aime :</h3>
+	<ul>
+		<li>la nature</li>
+		<li>le cinéma</li>
+	</ul>
+	<table class="parcours">
+		<tr>
+			<th>Experience</th><th>Description</th>
+		</tr>
+		<tr>
+			<td>Dev</td><td>expert</td>
+		</tr>
+		<tr>
+			<td>Gestion</td><td style="border-color:#424242">Débutant</td>
+		</tr>
+	</table>
+	</body> 
+</html>
