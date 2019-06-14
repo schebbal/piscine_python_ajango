@@ -1,7 +1,7 @@
 # **************************************************************************** #
 #                                                           LE - /             #
 #                                                               /              #
-#    render.py                                   .::    .:/ .      .::    #
+#    Reader.py                                   .::    .:/ .      .::         #
 #                                                  +:+:+   +:    +:  +:+:+     #
 #    By: schebbal <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
@@ -10,77 +10,81 @@
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
+import sys
+import os
 
-def string_to_dict(line):
-    my_dict = dict()
-    elem_split = line.split("=")
-    #print(elem_split)
-    my_dict['name'] = elem_split[0].strip(" ")
-    posi_split = elem_split[1].split(",")
-    #print(posi_split)
-    
-    for data in posi_split:
-        data_split = data.split(":")
-        #print(third_split)
-        my_dict[data_split[0].strip(" ")] = data_split[1].strip(" \n")
-    return my_dict
 
-def read_file():
-    """ renvoie un tableau rempli a partir du fichier """
-    with open("periodic_table.txt") as f:
-        my_tab = []
-        for line in f:
-            my_dict = string_to_dict(line)
-            my_tab.append(my_dict)
-            #print("------- : %s", my_tab, "\n")
-        return my_tab
+class FileReader:
+    """ classe generique qui gere le fichier en lecture """
 
-def header(f):
-	f.write("<!DOCTYPE html>\n")
-	f.write("<html lang='en'>\n")
-	f.write("  <head>\n    <meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>\n    <title>Periodic table</title>\n")
-	f.write("    <style>table {	width: 100%;} td {border: 1px solid black; padding:10px} </style>\n  </head>\n")
+    def __init__(self, filename):
+        self.filename = filename
 
-def footer(f):
-	f.write("</html>\n")
+    def read_file(self):
+        """ Methode generique doit etre specifiee """
+        pass
 
-def content(f, tab):
-	previous = 0
-	current = 0
-	s = "    <table>\n"
-	for elem in tab:
-		current = int(elem['position'])
-		if current == 0:
-			s +="      <tr>\n"
-		if current - previous > 1:
-			s += "        <td colspan='" + str(current - previous - 1) + "'></td>\n"
-        s += "        <td><h4>" + elem['name'] + "</h4>\n"
-        s += "          <ul><li>" + elem['number'] +"</li><li>" + elem['small'] +"</li><li>" + elem['molar'] + "</li></ul></td>\n"
-        if current == 17:
-            s += "      </tr>\n"
-            current = 0
-        previous = current
 
-	s += "    </table>\n"	
-	f.write(s)
+class Settings(FileReader):
+    """ classe derivee pour le fichier settings """
 
-def body(f, tab):
-	f.write("  <body>\n")
-	content(f, tab)
-	f.write("  </body>\n")
+    def __init__(self, filename):
+        super().__init__(filename)
+        self.read_file()
 
-def write_to_file(tab):
-	#print(tab)
-	with open("periodic_table.html", "w") as f: 
-		header(f)
-		body(f, tab)
-		footer(f)
+    def read_file(self):
+        """ Methode pour extraire les parametres du fichier settings dans un dictionnaire """
+        self.params = dict()
+        try:
+            with open(self.filename) as f:
+                for line in f:
+                    data = line.split("=")
+                    self.params[data[0].strip(" ")] = data[1].strip(
+                        "\" \n")  # Eliminer les caraceteres inutiles
+        except FileNotFoundError as e:
+            print("Le fichier {0} n'existe pas".format(e.filename))
+            exit(1)
 
-def generate_html():
-    my_tab = read_file()
-    #for elem in my_tab:
-    #    print(elem)
-    write_to_file(my_tab)
-    
-if __name__ == '__main__' :
-	generate_html()
+
+class Reader(FileReader):
+    """ classe derivee pour le fichier template """
+
+    def __init__(self, filename, setting_filename):
+        super().__init__(filename)
+        self.settings = Settings(setting_filename)
+
+    def format_line(self, line):
+        """ cette remplace les {parametre} dans la ligne traitee """
+        html_line = line
+        for cle in self.settings.params:
+            html_line = html_line.replace(
+                "{" + cle + "}", self.settings.params[cle])
+        return html_line
+
+    def html_writer(self, html_filename):
+        html_file = open(html_filename, "w")
+        try:
+            with open(self.filename) as f:
+                for line in f:
+                    html_line = self.format_line(line)
+                    html_file.write(html_line)
+        except FileNotFoundError as e:
+            print("Le fichier {0} n'existe pas".format(e.filename))
+            exit(1)
+
+        html_file.close()
+
+
+def Render(filename):
+    file, extension = os.path.splitext(filename)
+    if extension == ".template":
+        t = Reader(filename, "settings.py")
+        t.html_writer(file+".html")
+    else:
+        print(
+            "Le fichier {0} n'a l'extension : '.template'".format(filename))
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        Render(sys.argv[1])
