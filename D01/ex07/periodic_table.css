@@ -26,7 +26,6 @@ li:nth-child(even) { margin-bottom: 5em;}
 h2 {
 	margin: 0 0 1.5em;
 	border-bottom: 1px solid #ccc;
-
 	padding: 0 0 .25em;
 }
 
@@ -103,9 +102,7 @@ progress[value]::-moz-progress-bar {
 						rgba(0,0,0,.1) 33%,
 						rgba(0,0,0,.1) 66%,
 						transparent 66%),
-    -moz-linear-gradient( top,
-														rgba(255, 255, 255, .25),
-														rgba(0,0,0,.2)),
+    -moz-linear-gradient( top,rgba(255, 255, 255, .25),rgba(0,0,0,.2)),
      -moz-linear-gradient( left, #09c, #f44);
 	background-size: 35px 20px, 100% 100%, 100% 100%;
 	border-radius:3px;

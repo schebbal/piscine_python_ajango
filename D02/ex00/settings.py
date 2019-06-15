@@ -1,1 +1,7 @@
-name = "duoquadragintian"
+#name = "duoquadragintian"
+title = "My CV"
+firstname = "Said"
+name = "Chebbal"
+age = "58"
+profession = "Informaticien"
+score = "5.96"

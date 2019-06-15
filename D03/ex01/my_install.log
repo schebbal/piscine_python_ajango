@@ -1,0 +1,18 @@
+Collecting git+https://github.com/jaraco/path.py.git
+  Cloning https://github.com/jaraco/path.py.git to /private/var/folders/zz/zyxvpxvq6csfxvn_n00051qh0018dw/T/pip-req-build-yy8nadwv
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+    Preparing wheel metadata: started
+    Preparing wheel metadata: finished with status 'done'
+Collecting importlib-metadata>=0.5 (from path.py==12.0.1)
+  Using cached https://files.pythonhosted.org/packages/bd/23/dce4879ec58acf3959580bfe769926ed8198727250c5e395e6785c764a02/importlib_metadata-0.18-py2.py3-none-any.whl
+Collecting zipp>=0.5 (from importlib-metadata>=0.5->path.py==12.0.1)
+  Using cached https://files.pythonhosted.org/packages/a0/0f/9bf71d438d2e9d5fd0e4569ea4d1a2b6f5a524c234c6d221b494298bb4d1/zipp-0.5.1-py2.py3-none-any.whl
+Building wheels for collected packages: path.py
+  Building wheel for path.py (PEP 517): started
+  Building wheel for path.py (PEP 517): finished with status 'done'
+  Stored in directory: /private/var/folders/zz/zyxvpxvq6csfxvn_n00051qh0018dw/T/pip-ephem-wheel-cache-coipfzdv/wheels/8d/88/93/f0379960c8f715da1a50fccc45d0aac4c940d3daaf249b212d
+Successfully built path.py
+Installing collected packages: zipp, importlib-metadata, path.py
