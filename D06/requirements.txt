@@ -1,4 +1,0 @@
-Django==2.2
-django-bootstrap3==8.2.3
-psycopg2==2.7.1
-pytz==2017.2
