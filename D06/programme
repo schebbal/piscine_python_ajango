@@ -1,0 +1,152 @@
+00_Introduction
+01_Web_Authentification_Cookies
+recoonaitre un user et de lui donner l'autorisation
+--> fct de hachage
+--> md5 -s "asdasd"
+--> donc enregistrer le hach et le comparer
+---> cookie : trace laissee par un user
+
+
+02_Anonymous_Session
+--> usage des cookies
+page.html
+<body
+    {% if request.CPPKIES.mycookie %}
+    Cookie value : {{ request.COOKIES.mycookie }}
+    {% else %}
+    Cookie undefined.
+    {% endif %}
+    <form methode='POST'>
+        {% csrf_token %}
+        <input type='text' name='text'/>
+        <input type='submit' name='submit'/>
+    </form>
+</body>
+
+views.py
+from django.shortcuts import render
+from django.conf import settings
+
+def myview(request):
+    # if some data is sent
+    if request.method == 'POST':
+        # Get the submited value
+        cookie = request.POST.get('text', None)
+
+        # Setting the cookie in the request to pass it to template engine
+        request.COOKIES['mycookie'] = cookie
+        response = render(request,'main/page.html')
+
+        # Set the value in the response as cookie
+        response.set_cookie('mycookie', cookie, max_age_settings.SESSION_COOKIE_AGE)
+        return response
+
+    # If the page is just refreshed
+    return render(request,'max_age_settings')
+
+
+
+03_User_Creation
+python3 shell
+>>> from django.contrib.auth.models import user
+>>> u = Usr(username="toto", passwrd+"mysecretpassword")
+>>> u
+<User: toto>
+>>> u.username
+'toto'
+>>> u.password
+'mysecretpassword'
+>>> u = Usr.objects.create_user('toto', None, 'mysecretpassword')
+>>> u
+<User: toto>
+>>> u.username
+'toto'
+>>> u.password
+'pbkdf2_........................................'
+>>> 
+
+04_User_Session
+python3  mange.py createsuperuser
+Username :
+Email address :
+Password :
+
+main.html
+<body
+    <form methode='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' name='submit'/>
+    </form>
+
+    <a href="/logout">logout</a>
+    {{ request.user.username}}
+</body>
+
+views.py
+from django.shortcuts import render
+from django.conf import settings
+
+def home(request):
+    # if some data is sent
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_dta['username']
+            password = form.cleaned_dta['password']
+            user = auth.authentificate(username=username, password=password)
+            if user and user.is_active:
+                auth.login(request, user)
+                return redirect('/')
+            else:
+                form._errors['username'] = ['This user doesn\'t exist.']
+        else:
+            form = LoginForm()
+        return render(request,main/home.htnl',{'form':form})
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
+
+
+04_Custom_User
+Creer notre prope class utilisateur :
+1- ajoputer dans le fichiet settings.pyla variable suivante :
+AUTH_USER_MODEL = 'main.Student'
+2-
+models.py
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class Student(AbstractUser):
+    def presentation(self):
+        print("Hello! i am %s: " %self.username)
+3-
+python3 manage.py shell
+>>> from django.contrib.auth import get_user_model
+>>> User = get_user_model()
+>>> User
+<class 'django.contrib.auth.models.User'>
+>>> u = User.objects.create_user('bar')
+>>> u
+<User: bar>
+>>> u.presentation()
+Hello! I am Bar.
+
+models.py
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class Student(AbstractUser):
+    def presentation(self):
+        print("Hello! i am %s: " %self.username)
+
+06_Login_Required
+07_Standard_Permissions
+08_Custom_permissions
+09_Groups
+10_ModelForm
+11_Advenced_Form_Validation
+12_URL_Parameters
+13_Admin_Site
+14_Conclusion

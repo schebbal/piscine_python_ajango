@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    {% block title %}
+    {{title}}
+    Django c'est beau
+    {% endblock %}
+  </title>
+  <!--
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  -->
+  {% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static '/style1.css' %}">
+  {% endblock %}
+  <style type="text/css">
+    tr td:nth-child(odd) {
+            background-color: black; /* vert */
+    }
+    tr td:nth-child(even) {
+            background-color: red; /* orange */
+    }
+    tr td:nth-child(odd) {
+            background-color: blue; /* vert */
+    }
+    tr td:nth-child(even) {
+            background-color: green; /* orange */
+    }
+
+    td:nth-child(odd) {
+            background-color: opacity:1; /* vert pâle */
+    }
+    td:nth-child(even) {
+            background-color: opacity:0.7; /* orange pâle */
+    }
+    
+</style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th></th>
+        </tr>
+        {% for form in formset %}
+	    <tr>
+		    <td> {{ form.titre }} </td>
+		    <td> {{ form.auteur }} </td>
+		    <td> {{ form.sujet }} </td>
+		    <td> {{ form.date }} </td>
+	    </tr>
+	    {% endfor %}
+    </body>
+
+
+  {% block content %}
+  {% endblock %}
+
+
+
+</body>
+</html>

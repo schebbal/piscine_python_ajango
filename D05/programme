@@ -1,0 +1,230 @@
+# Programme D05
+00_Introduction
+01_Postgresql_setup
+02_Psycopg2_table_creation
+03_Sql_simple_queries
+04_SQL_multiple_tables_queries
+05_Django_ORM_configuration
+06_Django_models
+07_Django_migrations
+08_Django_model_queries
+09_Django_multiple_models_queries
+10_Django_fixtures
+11_Conclusion
+
+
+# 01_Postgresql_setup
+brew install postgresql
+tail ~/.zshrc
+export PGDATA=$HOME/.brew/var/postgrsql
+''pg_ctl start
+brew services start postgresql 
+    ou
+pg_ctl -D /Users/schebbal/.brew/var/postgres start
+psql -d postgres
+\?
+\l
+\d
+CREATE DATABASE formationdjango;
+CREATE USER djangouser WITH PASSWORD 'secret';
+ALTER DATABASE formationdjango OWNER TO djangouser;
+exit
+
+"""""
+python3 insert_table.py
+python3 select_table.py
+python3 delete_table.py
+psql -U djangouser -d formationdjango
+
+""""
+vim ~/.brew/var/postgres/pg_hba.conf
+et passer la ligne host/127.0.0.1/32/trust à host/127.0.0.1/32/md5 (force l'utilisation du mot de PASSWORD defini)
+pip3 install psycopg2
+
+# 02_Psycopg2_table_creation
+create_table.py)
+import psycopg2
+
+if __name__ == '__main__':
+		conn = psycopg2.connect(
+			database = 'formationdjango',
+			host = 'localhost',
+			user = 'djangouser',
+			password = 'secret'
+			)
+		
+		curr = conn.cursor()
+
+		curr.execute(""" CREATE TABLE IF NOT EXISTS ex00_movies (
+			episode_nb serial PRIMARY KEY, 
+			title varchar(64) NOT NULL,
+			opening_crawl text,
+			director varchar(32) NOT NULL,
+			producer varchar(128) NOT NULL,
+			release_date date NOT NULL
+			)
+			""")
+		conn.commit()
+
+        curr = conn.cursor()
+
+        curr.execute(""" SELECT * FROM ex00_movies """)
+        response = curr.fetchall()
+        for row in response:
+            print(row)
+		conn.close()
+	except psycopg2.Error as e:
+		print('Erreur : ', e.pgerror)
+		retStr = 'Erreur :' + str(e.pgerror).replace('\n', '<br />')
+		return HttpResponse(retStr)
+	return HttpResponse('OK')
+
+# 03_Sql_simple_queries
+renseigner le fichier D05/ex02/views
+et lancer :
+http://127.0.0.1:8000/ex02/init/
+http://127.0.0.1:8000/ex02/populate/
+http://127.0.0.1:8000/ex02/display/
+(D05/ex02)
+
+# 04_SQL_multiple_tables_queries 
+(create_table.py)
+import psycopg2
+
+if __name__ == '__main__':
+	try:
+		conn = psycopg2.connect(
+			database = 'formationdjango',
+			host = 'localhost',
+			user = 'djangouser',
+			password = 'secret'
+			)
+		
+		curr = conn.cursor()
+
+		curr.execute(""" CREATE TABLE IF NOT EXISTS members (
+			stage_name varchar(64) PRIMARY KEY, 
+			firstname  varchar(32) NOT NULL,
+            lastname  varchar(32) NOT NULL,
+			birthdate date
+			)
+			""")
+		conn.commit()
+
+        curr.execute(""" CREATE TABLE IF NOT EXISTS album (
+			title varchar(128) NOT NULL, 
+			artiste varchar(32) REFERENCES members(stage_name),
+            live boolean,
+			release date,
+            CONSTRAINT album_pk PRIMARY KEY (tile, artiste)
+			)
+			""")
+		conn.commit()
+
+        cur.execute("""
+            INSERT INTO members(stage_name, firstname, lastname, birthdate) VALUES
+            ('Eric Clapton', 'Eric', 'Clapton', '1945-03-30'),
+            ('Joe Benamassa', 'Joe', 'Benmassa', '1977-05-08'),
+            ('Slash', 'Saul', 'Hudson', '1965-07-23'),
+            ('Bumblefoot', 'Ronald Jay', 'Blumenthal', '1969-07-25')
+        """)
+        conn.commit()
+
+        cur.execute("""
+            INSERT INTO album(title, artiste, release, live) VALUES
+            ('Slash', 'Slash', '2010-03-31', false),
+            ('Apocalyptic Love', '2012-05-22', false),
+            ('Normal', 'Bumblefoot', '2005-12-01', false),
+            ('Abnormal', 'Bumblefoot', '2008-08-01', false),
+            ('Live from the Royal Albert Hall', 'Joe Benamassa', null, true),
+            ('One More Car', 'Eric Clapton', '2002-11-05', true),
+            ('Unplugged', 'Eric Clapton', '1992-08-25', true)
+        """)
+        conn.commit()
+		conn.close()
+	except psycopg2.Error as e:
+		print('Erreur : ', e.pgerror)
+		retStr = 'Erreur :' + str(e.pgerror).replace('\n', '<br />')
+		return HttpResponse(retStr)
+	return HttpResponse('OK')
+
+(select_from_studio_album.py)
+import psycopg2
+
+if __name__ == '__main__':
+    try:
+		conn = psycopg2.connect(
+			database = 'formationdjango',
+			host = 'localhost',
+			user = 'djangouser',
+			password = 'secret'
+			)
+		
+		curr = conn.cursor()
+
+		curr.execute("""
+            SELECT a.title, m.firstname, m.lastname, a.release
+            FFROM members m JOIN album album
+            ON a.artist = m.stage_name WHERE a.live =false;
+        "")
+        response = curr.fetchall()
+        conn.close()
+
+        for row in response:
+            print("album {:<20} from {:<25} released on {}".format(
+                    row[0], "{} {}".format(row[1], row[2]), row[3].isoformat()))
+
+# 05_Django_ORM_configuration
+cd D05
+ls
+    d05 manage.py
+cd d05
+ls
+    __init__.py settings.py urls.py wsgi.py
+
+Remplacer dans settings.py la Database sqlite3 paar defaut par :
+# Database
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'formationdjango',
+        'USER': 'djangouser',
+        'PASSWORD': 'secret',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+# 06_Django_models
+Dans models.py :
+from django.db import models
+
+# Create your models here.
+class Movies(models.Model): 
+	title = models.CharField(max_length = 64, null = False, unique = True)
+	episode_nb = models.AutoField(primary_key = True)
+	opening_crawl = models.TextField(null = True)
+	director = models.CharField(max_length = 32, null = False)
+	producer = models.CharField(max_length = 128, null = False)
+	release_date = models.DateField(null = False)
+
+	def __str__(self):
+		return self.title
+
+
+# 07_Django_migrations
+python3 manage.py makemigrations -name ex01
+python3 manage.py migrate ex03
+python3 manage.py sqlmigrate ex03 0001_ame
+http://127.0.0.1:8000/ex03/populate/
+http://127.0.0.1:8000/ex03/display/
+http://127.0.0.1:8000/ex03/delete/
+
+# 08_Django_model_queries
+# 09_Django_multiple_models_queries
+# 10_Django_fixtures
+python3 manage.py loaddata fixture.json
+python3 manage.py dumpdata > fixture.json
+# 11_Conclusion

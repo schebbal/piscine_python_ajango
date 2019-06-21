@@ -1,0 +1,20 @@
+{% extends 'ex01/base.html' %} 
+
+{% block title %}
+Ex01 : Processus d’affichage d’une page statique.
+{% endblock %}
+{% block content %} 
+{% include 'ex01/nav.html' %}
+
+    <h1>
+        Ex01 : Processus d’affichage d’une page statique.
+    </h1>
+    <p>C'est pourtant simple :</p>
+    <ul>
+    <li>tu fais un fichier html template que tu mets dans le répertoire templates de ton app</li>
+    <li>tu configures une route dans le fichier urls.py de ton app qui pointe sur une vue</li>
+    <li>dans cette vue, tu fais appel à la fonction render()</li>
+    </ul>
+    <h2>That's all folks!</h2>
+
+{% endblock %} 
